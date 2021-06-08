@@ -46,29 +46,8 @@ public class Server {
             }
 
             while (!(isReady())) ;
-            
-            StringBuilder mafias = new StringBuilder();
-            for (Handler handler : handlers) {
-                if (handler.getPlayerRole() instanceof godFather) {
-                    mafias.append("godfather : ").append(handler.getHandlerName()).append("\n");
-                }
-                if (handler.getPlayerRole() instanceof normalMafia) {
-                    mafias.append("normalMafia : ").append(handler.getHandlerName()).append("\n");
-                }
-                if (handler.getPlayerRole() instanceof Lecter) {
-                    mafias.append("lecter : ").append(handler.getHandlerName()).append("\n");
-                }
-            }
-            System.out.println(mafias);
 
-            for (Handler handler : handlers) {
-                if (handler.getPlayerRole() instanceof godFather ||
-                        handler.getPlayerRole() instanceof Lecter ||
-                        handler.getPlayerRole() instanceof normalMafia) {
-                    handler.write(mafias.toString());
-                }
-            }
-
+            introductoin();
 
 
         } catch (IOException ex) {
@@ -97,6 +76,43 @@ public class Server {
         return roles.get(0);
     }
 
+    public void introductoin() throws IOException {
+        StringBuilder mafias = new StringBuilder();
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole() instanceof godFather) {
+                mafias.append("godfather : ").append(handler.getHandlerName()).append("\n");
+            }
+            if (handler.getPlayerRole() instanceof normalMafia) {
+                mafias.append("normalMafia : ").append(handler.getHandlerName()).append("\n");
+            }
+            if (handler.getPlayerRole() instanceof Lecter) {
+                mafias.append("lecter : ").append(handler.getHandlerName()).append("\n");
+            }
+        }
+        System.out.println(mafias);
+
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole() instanceof godFather ||
+                    handler.getPlayerRole() instanceof Lecter ||
+                    handler.getPlayerRole() instanceof normalMafia) {
+                handler.write(mafias.toString());
+            }
+        }
+        StringBuilder doc = new StringBuilder();
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole() instanceof townDoctor) {
+                doc.append("townDoctor : ").append(handler.getHandlerName());
+            }
+        }
+
+        System.out.println(doc);
+
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole() instanceof Mayor) {
+                handler.write(doc.toString());
+            }
+        }
+    }
 
     public void addUserName(String userName) {
         userNames.add(userName);
