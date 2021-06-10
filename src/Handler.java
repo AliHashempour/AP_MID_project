@@ -30,7 +30,7 @@ public class Handler extends Thread {
 
             String text;
 
-            dataOutputStream.writeUTF("hello enter your name...");
+            dataOutputStream.writeUTF("hello  please enterenter your name...");
             String str = dataInputStream.readUTF();
 
             while (server.nameIsThere(str, dataOutputStream)) {

@@ -20,7 +20,6 @@ public class Server {
 
     public Server(int serverPort) {
         this.Port = serverPort;
-
         createRole();
     }
 
@@ -47,7 +46,10 @@ public class Server {
 
             while (!(isReady())) ;
 
-            introductoin();
+            System.out.println("introduction");
+            introduction();
+
+
 
 
         } catch (IOException ex) {
@@ -76,7 +78,7 @@ public class Server {
         return roles.get(0);
     }
 
-    public void introductoin() throws IOException {
+    public void introduction() throws IOException {
         StringBuilder mafias = new StringBuilder();
         for (Handler handler : handlers) {
             if (handler.getPlayerRole() instanceof godFather) {
@@ -112,12 +114,15 @@ public class Server {
                 handler.write(doc.toString());
             }
         }
+
+        for (Handler handler:handlers) {
+            handler.write("now we have passed the introduction night...");
+        }
     }
 
     public void addUserName(String userName) {
         userNames.add(userName);
     }
-
 
     public boolean isReady() {
         for (Handler handler : handlers) {

@@ -17,7 +17,6 @@ public class Client {
     }
 
     public void execute() {
-
         try {
             socket = new Socket(hostname, port);
 
@@ -26,7 +25,6 @@ public class Client {
         } catch (IOException ex) {
             System.out.println("I/O Error: " + ex.getMessage());
         }
-
     }
 
     void setUserName(String userName) {
