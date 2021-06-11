@@ -45,8 +45,13 @@ public class Handler extends Thread {
                 if (text.equals("HISTORY")) {
                     load(server.getFileName());
                 }
+                else if(text.equals("EXIT")){
+                    break;
+                }
                 server.sendAll(name + ": " + text);
             }
+
+            server.removeClientHandler(this);
 
         } catch (IOException ex) {
             System.out.println("Error in UserThread: " + ex.getMessage());

@@ -188,6 +188,10 @@ public class Server {
         return fileName;
     }
 
+    public void removeClientHandler(Handler handler){
+        handlers.remove(handler);
+    }
+
     public static void main(String[] args) {
 
         Server server = new Server(8585);

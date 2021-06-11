@@ -46,7 +46,12 @@ public class Client {
         Thread thread = new ThreadReader(dataInputStream);
         thread.start();
         while (true) {
-            dataOutputStream.writeUTF(scanner.nextLine());
+            String str = scanner.nextLine();
+            dataOutputStream.writeUTF(str);
+            if (str.equals("EXIT")){
+                System.exit(0);
+            }
+
         }
 
 
