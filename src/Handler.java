@@ -22,37 +22,30 @@ public class Handler extends Thread {
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataInputStream = new DataInputStream(socket.getInputStream());
 
-
     }
 
     public void run() {
         try {
-
             String text;
-
-            dataOutputStream.writeUTF("hello  please enterenter your name...");
+            dataOutputStream.writeUTF("hello  please enter your name...");
             String str = dataInputStream.readUTF();
-
             while (server.nameIsThere(str, dataOutputStream)) {
                 str = dataInputStream.readUTF();
             }
             name = str;
-
             Role role = server.sendingRole(dataOutputStream);
             playerRole = role;
             server.getRoles().remove(0);
-
-
             while (!(text = dataInputStream.readUTF()).equalsIgnoreCase("READY")) ;
-
             isReady = true;
-
 
 
             while (true) {
                 text = dataInputStream.readUTF();
-
-                server.sendAll(name+": "+text);
+                if (text.equals("HISTORY")) {
+                    load(server.getFileName());
+                }
+                server.sendAll(name + ": " + text);
             }
 
         } catch (IOException ex) {
@@ -82,6 +75,15 @@ public class Handler extends Thread {
         dataOutputStream.writeUTF(string);
     }
 
-
-
+    public void load(String file) {
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(file));
+            String mystring;
+            while ((mystring = in.readLine()) != null) {
+                dataOutputStream.writeUTF(mystring);
+            }
+        } catch (IOException e) {
+            System.out.println("Exception Occurred" + e);
+        }
+    }
 }

@@ -1,6 +1,4 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -11,6 +9,8 @@ import java.util.concurrent.Executors;
 
 public class Server {
     private int Port;
+    private String dayVoteNight;
+    private String fileName = "history.txt";
     private ArrayList<String> userNames = new ArrayList<>();
     private ArrayList<Handler> handlers = new ArrayList<>();
     private ArrayList<Role> roles = new ArrayList<>();
@@ -43,14 +43,21 @@ public class Server {
                 pool.execute(newHandler);
 
             }
-
             while (!(isReady())) ;
-
-            System.out.println("introduction");
             introduction();
 
+            while (true) {
+                dayVoteNight = "day";
+                serverMassages("you can chat for 5 minutes...");
+                while (new Date().getTime() - time < 90000) {
 
+                }
+                serverMassages("you should vote in 5 minutes...");
+                dayVoteNight = "vote";
+                while (new Date().getTime() - time < 900000) {
 
+                }
+            }
 
         } catch (IOException ex) {
             System.out.println("Error in the server: " + ex.getMessage());
@@ -91,8 +98,6 @@ public class Server {
                 mafias.append("lecter : ").append(handler.getHandlerName()).append("\n");
             }
         }
-        System.out.println(mafias);
-
         for (Handler handler : handlers) {
             if (handler.getPlayerRole() instanceof godFather ||
                     handler.getPlayerRole() instanceof Lecter ||
@@ -106,16 +111,12 @@ public class Server {
                 doc.append("townDoctor : ").append(handler.getHandlerName());
             }
         }
-
-        System.out.println(doc);
-
         for (Handler handler : handlers) {
             if (handler.getPlayerRole() instanceof Mayor) {
                 handler.write(doc.toString());
             }
         }
-
-        for (Handler handler:handlers) {
+        for (Handler handler : handlers) {
             handler.write("now we have passed the introduction night...");
         }
     }
@@ -153,16 +154,38 @@ public class Server {
         }
     }
 
-
     public ArrayList<Role> getRoles() {
         return roles;
     }
 
-    public void sendAll(String text) throws IOException {
-
+    public void serverMassages(String string) throws IOException {
         for (Handler handler : handlers) {
-            handler.write(text);
+            handler.write(string);
         }
+    }
+
+    public void sendAll(String text) throws IOException {
+        if (dayVoteNight.equalsIgnoreCase("day")) {
+            appendStrToFile(fileName, text + "\n");
+            for (Handler handler : handlers) {
+                handler.write(text);
+            }
+        }
+    }
+
+    public void appendStrToFile(String fileName, String str) {
+        try {
+            // Open given file in append mode.
+            BufferedWriter out = new BufferedWriter(new FileWriter(fileName, true));
+            out.write(str);
+            out.close();
+        } catch (IOException e) {
+            System.out.println("exception occoured" + e);
+        }
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public static void main(String[] args) {
