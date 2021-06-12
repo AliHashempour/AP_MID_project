@@ -44,13 +44,12 @@ public class Handler extends Thread {
                 text = dataInputStream.readUTF();
                 if (text.equals("HISTORY")) {
                     load(server.getFileName());
-                }
-                else if(text.equals("EXIT")){
+                } else if (text.equals("EXIT")) {
                     break;
                 }
                 server.sendAll(name + ": " + text);
             }
-
+            server.sendAll(name + " exited from the game...");
             server.removeClientHandler(this);
 
         } catch (IOException ex) {

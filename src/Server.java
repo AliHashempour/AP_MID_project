@@ -9,6 +9,8 @@ import java.util.concurrent.Executors;
 
 public class Server {
     private int Port;
+    private int mafiaNumber = 0;
+    private int citizenNumber = 0;
     private String dayVoteNight;
     private String fileName = "history.txt";
     private ArrayList<String> userNames = new ArrayList<>();
@@ -45,6 +47,8 @@ public class Server {
             }
             while (!(isReady())) ;
             introduction();
+            System.out.println("mafias " + mafiaNumber);
+            System.out.println("citizens " + citizenNumber);
 
             while (true) {
                 dayVoteNight = "day";
@@ -55,16 +59,28 @@ public class Server {
                 serverMassages("you should vote in 5 minutes...");
                 dayVoteNight = "vote";
                 while (new Date().getTime() - time < 900000) {
+                    System.out.println("mafias " + mafiaNumber);
+                    System.out.println("citizens " + citizenNumber);
+                    votingMassage();
 
+
+                    Thread.sleep(1000000);
                 }
             }
-
-        } catch (IOException ex) {
+        } catch (IOException | InterruptedException ex) {
             System.out.println("Error in the server: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
 
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public ArrayList<Role> getRoles() {
+        return roles;
+    }
 
     public void createRole() {
         roles.add(new detective());
@@ -82,6 +98,13 @@ public class Server {
     public Role sendingRole(DataOutputStream dout) throws IOException {
         Collections.shuffle(roles);
         dout.writeUTF("your role : " + roles.get(0).toString());
+        if (roles.get(0) instanceof godFather ||
+                roles.get(0) instanceof Lecter ||
+                roles.get(0) instanceof normalMafia) {
+            mafiaNumber++;
+        } else {
+            citizenNumber++;
+        }
         return roles.get(0);
     }
 
@@ -154,10 +177,6 @@ public class Server {
         }
     }
 
-    public ArrayList<Role> getRoles() {
-        return roles;
-    }
-
     public void serverMassages(String string) throws IOException {
         for (Handler handler : handlers) {
             handler.write(string);
@@ -184,12 +203,24 @@ public class Server {
         }
     }
 
-    public String getFileName() {
-        return fileName;
+    public void removeClientHandler(Handler handler) {
+        if (handler.getPlayerRole() instanceof normalMafia ||
+                handler.getPlayerRole() instanceof Lecter ||
+                handler.getPlayerRole() instanceof godFather) {
+            mafiaNumber--;
+        } else {
+            citizenNumber--;
+        }
+        handlers.remove(handler);
     }
 
-    public void removeClientHandler(Handler handler){
-        handlers.remove(handler);
+    public void votingMassage() throws IOException {
+        String voteNames = "";
+        for (Handler handler : handlers) {
+            voteNames += (handler.getHandlerName() + "\n");
+        }
+        serverMassages("who do you want to be kicked?\n");
+        serverMassages(voteNames);
     }
 
     public static void main(String[] args) {

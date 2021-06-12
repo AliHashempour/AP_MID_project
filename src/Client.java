@@ -48,12 +48,9 @@ public class Client {
         while (true) {
             String str = scanner.nextLine();
             dataOutputStream.writeUTF(str);
-            if (str.equals("EXIT")){
+            if (str.equals("EXIT")) {
                 System.exit(0);
             }
-
         }
-
-
     }
 }
