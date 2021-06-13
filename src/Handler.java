@@ -5,10 +5,13 @@ import java.util.ArrayList;
 public class Handler extends Thread {
     private String name;
     private Socket socket;
+    private int voteNum = 0;
     private Role playerRole;
     private Server server;
     private boolean isReady;
+    private boolean isAlive;
     private boolean isMafia;
+    private boolean canVote;
     private ArrayList<Handler> handlers;
     private DataOutputStream dataOutputStream;
     private DataInputStream dataInputStream;
@@ -19,9 +22,10 @@ public class Handler extends Thread {
         this.handlers = handlers;
         this.server = server;
         this.isReady = false;
+        this.isAlive = true;
+        this.canVote = true;
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataInputStream = new DataInputStream(socket.getInputStream());
-
     }
 
     public void run() {
@@ -47,7 +51,13 @@ public class Handler extends Thread {
                 } else if (text.equals("EXIT")) {
                     break;
                 }
-                server.sendAll(name + ": " + text);
+                if (server.getDayVoteNight().equals("vote") && this.canVote) {
+                    server.voteToKick(this, text);
+                }
+
+                if (isAlive) {
+                    server.sendAll(name + ": " + text);
+                }
             }
             server.sendAll(name + " exited from the game...");
             server.removeClientHandler(this);
@@ -58,24 +68,54 @@ public class Handler extends Thread {
         }
     }
 
+
     public boolean isReady() {
+
         return isReady;
     }
 
     public Role getPlayerRole() {
+
         return playerRole;
     }
 
+    public int getVoteNum() {
+
+        return voteNum;
+    }
+
+    public void setCanVote(boolean canVote) {
+
+        this.canVote = canVote;
+    }
+
+    public void setVoteNum(int voteNum) {
+
+        this.voteNum = voteNum;
+    }
 
     public String getHandlerName() {
+
         return name;
     }
 
     public boolean isMafia() {
+
         return isMafia;
     }
 
+    public boolean isHeAlive() {
+        return isAlive;
+
+    }
+
+    public void setAlive(boolean alive) {
+
+        isAlive = alive;
+    }
+
     public void write(String string) throws IOException {
+
         dataOutputStream.writeUTF(string);
     }
 
@@ -90,4 +130,11 @@ public class Handler extends Thread {
             System.out.println("Exception Occurred" + e);
         }
     }
+
+    public void increaseVoteNum() {
+
+        voteNum++;
+    }
+
+
 }

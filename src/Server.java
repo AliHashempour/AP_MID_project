@@ -47,38 +47,50 @@ public class Server {
             }
             while (!(isReady())) ;
             introduction();
-            System.out.println("mafias " + mafiaNumber);
-            System.out.println("citizens " + citizenNumber);
+
 
             while (true) {
                 dayVoteNight = "day";
                 serverMassages("you can chat for 5 minutes...");
-                while (new Date().getTime() - time < 90000) {
 
-                }
-                serverMassages("you should vote in 5 minutes...");
+                chatRoom();
+
+                serverMassages("we passed the day you should vote in 5 minutes...");
+
                 dayVoteNight = "vote";
-                while (new Date().getTime() - time < 900000) {
-                    System.out.println("mafias " + mafiaNumber);
-                    System.out.println("citizens " + citizenNumber);
-                    votingMassage();
+                votingMassage();
 
+                voteRoom();
 
-                    Thread.sleep(1000000);
-                }
+                showVotes();
+
+                Thread.sleep(5000);
+
+                killPlayer();
+
+                resetVoteStatus();
+
+                Thread.sleep(5000);
             }
+
         } catch (IOException | InterruptedException ex) {
             System.out.println("Error in the server: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
 
+    public String getDayVoteNight() {
+
+        return dayVoteNight;
+    }
 
     public String getFileName() {
+
         return fileName;
     }
 
     public ArrayList<Role> getRoles() {
+
         return roles;
     }
 
@@ -144,7 +156,35 @@ public class Server {
         }
     }
 
+    public void voteToKick(Handler theHandler, String name) throws IOException {
+        if (name.equals("none")) {
+            serverMassages(theHandler.getHandlerName() + " voted" +
+                    " to no one...");
+            theHandler.setCanVote(false);
+        } else {
+            for (Handler handler : handlers) {
+                if (handler.getHandlerName().equals(name)) {
+                    handler.increaseVoteNum();
+                    serverMassages(theHandler.getHandlerName() +
+                            " voted to " + handler.getHandlerName());
+                    theHandler.setCanVote(false);
+                }
+            }
+        }
+    }
+
+    public void showVotes() throws IOException {
+        String votes = "";
+        for (Handler handler : handlers) {
+            if (handler.isHeAlive()) {
+                votes += handler.getHandlerName() + ": " + handler.getVoteNum() + "\n";
+            }
+        }
+        serverMassages(votes);
+    }
+
     public void addUserName(String userName) {
+
         userNames.add(userName);
     }
 
@@ -188,6 +228,7 @@ public class Server {
             appendStrToFile(fileName, text + "\n");
             for (Handler handler : handlers) {
                 handler.write(text);
+
             }
         }
     }
@@ -215,12 +256,45 @@ public class Server {
     }
 
     public void votingMassage() throws IOException {
-        String voteNames = "";
+        StringBuilder voteNames = new StringBuilder();
         for (Handler handler : handlers) {
-            voteNames += (handler.getHandlerName() + "\n");
+            voteNames.append(handler.getHandlerName()).append("\n");
         }
         serverMassages("who do you want to be kicked?\n");
-        serverMassages(voteNames);
+        serverMassages(voteNames.toString());
+    }
+
+    public void chatRoom() {
+        long time = System.currentTimeMillis();
+        long time2 = time + 30000;
+        while (System.currentTimeMillis() < time2) {
+
+        }
+    }
+
+    public void voteRoom() {
+        long time = System.currentTimeMillis();
+        long time2 = time + 30000;
+        while (System.currentTimeMillis() < time2) {
+
+        }
+    }
+
+    public void resetVoteStatus() {
+        for (Handler handler : handlers) {
+            handler.setCanVote(true);
+            handler.setVoteNum(0);
+        }
+    }
+
+    public void killPlayer() throws IOException {
+        int playerNum = (mafiaNumber + citizenNumber) / 2;
+        for (Handler handler : handlers) {
+            if (handler.getVoteNum() >= playerNum) {
+                handler.setAlive(false);
+                serverMassages(handler.getHandlerName() + " got kicked ");
+            }
+        }
     }
 
     public static void main(String[] args) {
