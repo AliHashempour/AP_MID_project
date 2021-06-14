@@ -326,7 +326,6 @@ public class Server {
                 handler.increaseKillVoteNum();
             }
         }
-        killConfiguration();
     }
 
     public void killConfiguration() throws IOException {
@@ -370,6 +369,32 @@ public class Server {
         }
     }
 
+    public void massageToDetective() throws IOException {
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole() instanceof detective && handler.isHeAlive()) {
+                handler.write("hey man who do you wanna know that is mafia or not? ask me :D");
+            }
+        }
+        serverMassages("\ndetective is choosing some one to ask if he is mafia or not!!!");
+        long time = System.currentTimeMillis();
+        long time2 = time + 30000;
+        while (System.currentTimeMillis() < time2) {
+
+        }
+    }
+
+    public void isHeMafia(String name, Handler detective) throws IOException {
+        for (Handler handler : handlers) {
+            if (handler.getHandlerName().equals(name)) {
+                if (handler.getPlayerRole() instanceof normalMafia ||
+                        handler.getPlayerRole() instanceof Lecter) {
+                    detective.write("Yes " + handler.getHandlerName() + " is a mafia :)");
+                } else {
+                    detective.write("No " + handler.getHandlerName() + " is not a mafia :)");
+                }
+            }
+        }
+    }
 
     //after night...........................................................................................
     public void tellingStatusOfNight() throws IOException {
@@ -412,13 +437,21 @@ public class Server {
         serverMassages("we have reached to night...please wait for server massage....");
         Thread.sleep(2000);
         massageToMafia();
+        killConfiguration();
+        Thread.sleep(2000);
         serverMassages("doctor wants to heal some one!!!");
         Thread.sleep(2000);
         massageToDoctor();
         Thread.sleep(2000);
         serverMassages("doctor played his role!!!");
+        Thread.sleep(2000);
+        serverMassages("now detective should ask for mafias!!!");
+        Thread.sleep(2000);
+        massageToDetective();
+        Thread.sleep(1000);
+        serverMassages("detective did the questioning!!!");
         long time = System.currentTimeMillis();
-        long time2 = time + 5000;
+        long time2 = time + 1000;
         while (System.currentTimeMillis() < time2) {
         }
     }

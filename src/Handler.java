@@ -57,14 +57,18 @@ public class Handler extends Thread {
                     server.voteToKick(this, text);
                 }
                 //night mode.....................................................................................
-                if (server.getDayVoteNight().equals("night") && (role instanceof godFather ||
-                        role instanceof Lecter || role instanceof normalMafia)
-                        && isAlive) {
+                if (server.getDayVoteNight().equals("night") && ((role instanceof godFather && isAlive) ||
+                        (role instanceof Lecter && isAlive) || (role instanceof normalMafia && isAlive))
+                ) {
                     server.killPlayer(text);
                 }
                 if (server.getDayVoteNight().equals("night") && (role instanceof townDoctor)
                         && isAlive) {
                     server.heal(text);
+                }
+                if (server.getDayVoteNight().equals("night") && (role instanceof detective)
+                        && isAlive) {
+                    server.isHeMafia(text, this);
                 }
 
                 if (isAlive) {
