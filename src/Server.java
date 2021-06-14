@@ -48,17 +48,18 @@ public class Server {
             while (!(isReady())) ;
             introduction();
 
-
+            Thread.sleep(5000);
             while (true) {
                 //DAY.........................................................................................
                 dayVoteNight = "day";
-                serverMassages("you can chat for 5 minutes...");
+                serverMassages("now its day and you can chat for 5 minutes...");
 
                 chatRoom();
 
                 //voting time.................................................................................
 
                 serverMassages("we passed the day you should vote in 5 minutes...");
+                Thread.sleep(5000);
                 dayVoteNight = "vote";
                 votingMassage();
                 voteRoom();
@@ -73,12 +74,12 @@ public class Server {
                 dayVoteNight = "night";
                 nightMode();
                 Thread.sleep(5000);
+
                 //after night..................................................................................
                 tellingStatusOfNight();
                 Thread.sleep(10000);
 
             }
-
 
         } catch (IOException | InterruptedException ex) {
             System.out.println("Error in the server: " + ex.getMessage());
@@ -243,7 +244,7 @@ public class Server {
                 voteNames.append(handler.getHandlerName()).append("\n");
             }
         }
-        serverMassages("who do you want to be kicked?\n");
+        serverMassages("who do you want to be kicked???");
         serverMassages(voteNames.toString());
     }
 
@@ -264,13 +265,15 @@ public class Server {
         }
     }
 
-    public void showVotes() throws IOException {
+    public void showVotes() throws IOException, InterruptedException {
         String votes = "";
         for (Handler handler : handlers) {
             if (handler.isHeAlive()) {
                 votes += handler.getHandlerName() + ": " + handler.getVoteNum() + "\n";
             }
         }
+        serverMassages("now you can see the vote chart!!!\n");
+        Thread.sleep(4000);
         serverMassages(votes);
     }
 
@@ -302,19 +305,19 @@ public class Server {
 
     public void massageToMafia() throws IOException {
         for (Handler handler : handlers) {
-            if (handler.getPlayerRole() instanceof godFather ||
-                    handler.getPlayerRole() instanceof Lecter ||
-                    handler.getPlayerRole() instanceof normalMafia) {
-                handler.write("\nplease choose someone to kill...");
+            if ((handler.getPlayerRole() instanceof godFather && handler.isHeAlive()) ||
+                    (handler.getPlayerRole() instanceof Lecter && handler.isHeAlive()) ||
+                    (handler.getPlayerRole() instanceof normalMafia && handler.isHeAlive())) {
+                handler.write("\nplease choose someone to kill :)");
             }
         }
-        serverMassages("mafia are choosing...\n");
+        serverMassages("mafia are choosing some one to fuck him up");
         long time = System.currentTimeMillis();
-        long time2 = time + 30000;
+        long time2 = time + 50000;
         while (System.currentTimeMillis() < time2) {
 
         }
-        serverMassages("they Choosed...\n");
+        serverMassages("they made they're choice...\n");
     }
 
     public void killPlayer(String name) throws IOException {
@@ -342,11 +345,39 @@ public class Server {
         }
     }
 
+    public void massageToDoctor() throws IOException {
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole() instanceof townDoctor && handler.isHeAlive()) {
+                handler.write("please choose some one to heal him :D");
+            }
+        }
+        serverMassages("\ndoctor is choosing some one to heal");
+        long time = System.currentTimeMillis();
+        long time2 = time + 30000;
+        while (System.currentTimeMillis() < time2) {
+
+        }
+        serverMassages("doctor made his choice...\n");
+    }
+
+    public void heal(String name) {
+        for (Handler handler : handlers) {
+            if (handler.getHandlerName().equals(name)) {
+                if (handler.getPlayerRole().getHealthBar() == 0) {
+                    handler.getPlayerRole().increaseHealth();
+                }
+            }
+        }
+    }
+
+
     //after night...........................................................................................
     public void tellingStatusOfNight() throws IOException {
+
         for (Handler handler : handlers) {
             if (handler.getPlayerRole().getHealthBar() == 0) {
-                serverMassages(handler.getHandlerName() + "got killed savagely...\n");
+
+                serverMassages(handler.getHandlerName() + " got killed in the night!!!!\n");
                 handler.setAlive(false);
                 if (handler.getPlayerRole() instanceof godFather ||
                         handler.getPlayerRole() instanceof Lecter ||
@@ -377,11 +408,17 @@ public class Server {
         }
     }
 
-    public void nightMode() throws IOException {
-        serverMassages("we have retched to night...please wait for server massage....");
+    public void nightMode() throws IOException, InterruptedException {
+        serverMassages("we have reached to night...please wait for server massage....");
+        Thread.sleep(2000);
         massageToMafia();
+        serverMassages("doctor wants to heal some one!!!");
+        Thread.sleep(2000);
+        massageToDoctor();
+        Thread.sleep(2000);
+        serverMassages("doctor played his role!!!");
         long time = System.currentTimeMillis();
-        long time2 = time + 60000;
+        long time2 = time + 5000;
         while (System.currentTimeMillis() < time2) {
         }
     }

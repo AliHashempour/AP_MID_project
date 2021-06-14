@@ -62,12 +62,16 @@ public class Handler extends Thread {
                         && isAlive) {
                     server.killPlayer(text);
                 }
+                if (server.getDayVoteNight().equals("night") && (role instanceof townDoctor)
+                        && isAlive) {
+                    server.heal(text);
+                }
 
                 if (isAlive) {
                     server.sendAll(name + ": " + text);
                 }
             }
-            server.sendAll(name + " exited from the game...");
+            server.sendAll(name + " exited from the game!!!");
             server.removeClientHandler(this);
 
         } catch (IOException ex) {
