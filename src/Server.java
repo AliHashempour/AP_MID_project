@@ -50,13 +50,14 @@ public class Server {
 
 
             while (true) {
+                //DAY.........................................................................................
                 dayVoteNight = "day";
                 serverMassages("you can chat for 5 minutes...");
 
                 chatRoom();
 
+                //voting time.................................................................................
                 serverMassages("we passed the day you should vote in 5 minutes...");
-
                 dayVoteNight = "vote";
                 votingMassage();
 
@@ -66,11 +67,18 @@ public class Server {
 
                 Thread.sleep(5000);
 
-                killPlayer();
+                kickPlayer();
 
                 resetVoteStatus();
 
                 Thread.sleep(5000);
+
+                //night time...................................................................................
+//                dayVoteNight = "night";
+//                nightMode();
+//
+//                Thread.sleep(5000);
+
             }
 
         } catch (IOException | InterruptedException ex) {
@@ -78,6 +86,7 @@ public class Server {
             ex.printStackTrace();
         }
     }
+    //getters...........................................................................................
 
     public String getDayVoteNight() {
 
@@ -92,6 +101,33 @@ public class Server {
     public ArrayList<Role> getRoles() {
 
         return roles;
+    }
+
+    //before starting game methods.......................................................................
+
+    public void addUserName(String userName) {
+
+        userNames.add(userName);
+    }
+
+    public void removeUser(String userName, Handler aUser) {
+        boolean removed = userNames.remove(userName);
+        if (removed) {
+            handlers.remove(aUser);
+            System.out.println("The user " + userName + " quited");
+        }
+    }
+
+    public boolean nameIsThere(String name, DataOutputStream dataOutputStream) throws IOException {
+        boolean bool = false;
+        if (userNames.contains(name)) {
+            dataOutputStream.writeUTF("name exists");
+            bool = true;
+        } else {
+            addUserName(name);
+            dataOutputStream.writeUTF("name added");
+        }
+        return bool;
     }
 
     public void createRole() {
@@ -118,6 +154,15 @@ public class Server {
             citizenNumber++;
         }
         return roles.get(0);
+    }
+
+    public boolean isReady() {
+        for (Handler handler : handlers) {
+            if (!handler.isReady()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void introduction() throws IOException {
@@ -156,6 +201,61 @@ public class Server {
         }
     }
 
+    //massaging methods ..................................................................................
+
+    public void serverMassages(String string) throws IOException {
+        for (Handler handler : handlers) {
+            handler.write(string);
+        }
+    }
+
+    public void sendAll(String text) throws IOException {
+        if (dayVoteNight.equalsIgnoreCase("day")) {
+            appendStrToFile(fileName, text + "\n");
+            for (Handler handler : handlers) {
+                handler.write(text);
+
+            }
+        }
+    }
+
+    //chatroom methods....................................................................................
+
+    public void appendStrToFile(String fileName, String str) {
+        try {
+            // Open given file in append mode.
+            BufferedWriter out = new BufferedWriter(new FileWriter(fileName, true));
+            out.write(str);
+            out.close();
+        } catch (IOException e) {
+            System.out.println("exception occoured" + e);
+        }
+    }
+
+    public void removeClientHandler(Handler handler) {
+        if (handler.getPlayerRole() instanceof normalMafia ||
+                handler.getPlayerRole() instanceof Lecter ||
+                handler.getPlayerRole() instanceof godFather) {
+            mafiaNumber--;
+        } else {
+            citizenNumber--;
+        }
+        handlers.remove(handler);
+    }
+
+    //voting time methods..................................................................................
+
+    public void votingMassage() throws IOException {
+        StringBuilder voteNames = new StringBuilder();
+        for (Handler handler : handlers) {
+            if (handler.isHeAlive()) {
+                voteNames.append(handler.getHandlerName()).append("\n");
+            }
+        }
+        serverMassages("who do you want to be kicked?\n");
+        serverMassages(voteNames.toString());
+    }
+
     public void voteToKick(Handler theHandler, String name) throws IOException {
         if (name.equals("none")) {
             serverMassages(theHandler.getHandlerName() + " voted" +
@@ -183,86 +283,27 @@ public class Server {
         serverMassages(votes);
     }
 
-    public void addUserName(String userName) {
-
-        userNames.add(userName);
-    }
-
-    public boolean isReady() {
+    public void resetVoteStatus() {
         for (Handler handler : handlers) {
-            if (!handler.isReady()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean nameIsThere(String name, DataOutputStream dataOutputStream) throws IOException {
-        boolean bool = false;
-        if (userNames.contains(name)) {
-            dataOutputStream.writeUTF("name exists");
-            bool = true;
-        } else {
-            addUserName(name);
-            dataOutputStream.writeUTF("name added");
-        }
-        return bool;
-    }
-
-    public void removeUser(String userName, Handler aUser) {
-        boolean removed = userNames.remove(userName);
-        if (removed) {
-            handlers.remove(aUser);
-            System.out.println("The user " + userName + " quited");
+            handler.setCanVote(true);
+            handler.setVoteNum(0);
         }
     }
 
-    public void serverMassages(String string) throws IOException {
+    public void kickPlayer() throws IOException {
+        int playerNum = (mafiaNumber + citizenNumber) / 2;
         for (Handler handler : handlers) {
-            handler.write(string);
-        }
-    }
-
-    public void sendAll(String text) throws IOException {
-        if (dayVoteNight.equalsIgnoreCase("day")) {
-            appendStrToFile(fileName, text + "\n");
-            for (Handler handler : handlers) {
-                handler.write(text);
-
+            if (handler.getVoteNum() > playerNum) {
+                handler.setAlive(false);
+                serverMassages(handler.getHandlerName() + " got kicked ");
             }
         }
     }
 
-    public void appendStrToFile(String fileName, String str) {
-        try {
-            // Open given file in append mode.
-            BufferedWriter out = new BufferedWriter(new FileWriter(fileName, true));
-            out.write(str);
-            out.close();
-        } catch (IOException e) {
-            System.out.println("exception occoured" + e);
-        }
-    }
+    //night mode methods .....................................................................................
 
-    public void removeClientHandler(Handler handler) {
-        if (handler.getPlayerRole() instanceof normalMafia ||
-                handler.getPlayerRole() instanceof Lecter ||
-                handler.getPlayerRole() instanceof godFather) {
-            mafiaNumber--;
-        } else {
-            citizenNumber--;
-        }
-        handlers.remove(handler);
-    }
 
-    public void votingMassage() throws IOException {
-        StringBuilder voteNames = new StringBuilder();
-        for (Handler handler : handlers) {
-            voteNames.append(handler.getHandlerName()).append("\n");
-        }
-        serverMassages("who do you want to be kicked?\n");
-        serverMassages(voteNames.toString());
-    }
+    //the game mod methods..................................................................................
 
     public void chatRoom() {
         long time = System.currentTimeMillis();
@@ -280,20 +321,11 @@ public class Server {
         }
     }
 
-    public void resetVoteStatus() {
-        for (Handler handler : handlers) {
-            handler.setCanVote(true);
-            handler.setVoteNum(0);
-        }
-    }
+    public void nightMode() {
+        long time = System.currentTimeMillis();
+        long time2 = time + 300000;
+        while (System.currentTimeMillis() < time2) {
 
-    public void killPlayer() throws IOException {
-        int playerNum = (mafiaNumber + citizenNumber) / 2;
-        for (Handler handler : handlers) {
-            if (handler.getVoteNum() >= playerNum) {
-                handler.setAlive(false);
-                serverMassages(handler.getHandlerName() + " got kicked ");
-            }
         }
     }
 

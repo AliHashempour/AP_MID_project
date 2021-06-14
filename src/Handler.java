@@ -10,7 +10,6 @@ public class Handler extends Thread {
     private Server server;
     private boolean isReady;
     private boolean isAlive;
-    private boolean isMafia;
     private boolean canVote;
     private ArrayList<Handler> handlers;
     private DataOutputStream dataOutputStream;
@@ -45,14 +44,22 @@ public class Handler extends Thread {
 
 
             while (true) {
+                //chatroom and day mode..........................................................................
                 text = dataInputStream.readUTF();
-                if (text.equals("HISTORY")) {
+                if (text.equals("HISTORY") && server.getDayVoteNight().equals("day")) {
                     load(server.getFileName());
                 } else if (text.equals("EXIT")) {
                     break;
                 }
-                if (server.getDayVoteNight().equals("vote") && this.canVote) {
+                //voting........................................................................................
+                if (server.getDayVoteNight().equals("vote") && this.canVote
+                        && isAlive) {
                     server.voteToKick(this, text);
+                }
+                //night mode.....................................................................................
+                if (server.getDayVoteNight().equals("night") && role instanceof godFather
+                        && isAlive) {
+
                 }
 
                 if (isAlive) {
@@ -97,11 +104,6 @@ public class Handler extends Thread {
     public String getHandlerName() {
 
         return name;
-    }
-
-    public boolean isMafia() {
-
-        return isMafia;
     }
 
     public boolean isHeAlive() {
