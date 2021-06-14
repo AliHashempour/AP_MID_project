@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Handler extends Thread {
     private String name;
+    private int voteToKill = 0;
     private Socket socket;
     private int voteNum = 0;
     private Role playerRole;
@@ -42,7 +43,6 @@ public class Handler extends Thread {
             while (!(text = dataInputStream.readUTF()).equalsIgnoreCase("READY")) ;
             isReady = true;
 
-
             while (true) {
                 //chatroom and day mode..........................................................................
                 text = dataInputStream.readUTF();
@@ -57,9 +57,10 @@ public class Handler extends Thread {
                     server.voteToKick(this, text);
                 }
                 //night mode.....................................................................................
-                if (server.getDayVoteNight().equals("night") && role instanceof godFather
+                if (server.getDayVoteNight().equals("night") && (role instanceof godFather ||
+                        role instanceof Lecter || role instanceof normalMafia)
                         && isAlive) {
-
+                    server.killPlayer(text);
                 }
 
                 if (isAlive) {
@@ -89,6 +90,11 @@ public class Handler extends Thread {
     public int getVoteNum() {
 
         return voteNum;
+    }
+
+    public int getVoteToKill() {
+
+        return voteToKill;
     }
 
     public void setCanVote(boolean canVote) {
@@ -136,6 +142,11 @@ public class Handler extends Thread {
     public void increaseVoteNum() {
 
         voteNum++;
+    }
+
+    public void increaseKillVoteNum() {
+
+        voteToKill++;
     }
 
 

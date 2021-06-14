@@ -57,29 +57,28 @@ public class Server {
                 chatRoom();
 
                 //voting time.................................................................................
+
                 serverMassages("we passed the day you should vote in 5 minutes...");
                 dayVoteNight = "vote";
                 votingMassage();
-
                 voteRoom();
-
                 showVotes();
-
                 Thread.sleep(5000);
-
                 kickPlayer();
-
                 resetVoteStatus();
-
                 Thread.sleep(5000);
 
                 //night time...................................................................................
-//                dayVoteNight = "night";
-//                nightMode();
-//
-//                Thread.sleep(5000);
+
+                dayVoteNight = "night";
+                nightMode();
+                Thread.sleep(5000);
+                //after night..................................................................................
+                tellingStatusOfNight();
+                Thread.sleep(10000);
 
             }
+
 
         } catch (IOException | InterruptedException ex) {
             System.out.println("Error in the server: " + ex.getMessage());
@@ -108,14 +107,6 @@ public class Server {
     public void addUserName(String userName) {
 
         userNames.add(userName);
-    }
-
-    public void removeUser(String userName, Handler aUser) {
-        boolean removed = userNames.remove(userName);
-        if (removed) {
-            handlers.remove(aUser);
-            System.out.println("The user " + userName + " quited");
-        }
     }
 
     public boolean nameIsThere(String name, DataOutputStream dataOutputStream) throws IOException {
@@ -293,15 +284,80 @@ public class Server {
     public void kickPlayer() throws IOException {
         int playerNum = (mafiaNumber + citizenNumber) / 2;
         for (Handler handler : handlers) {
-            if (handler.getVoteNum() > playerNum) {
+            if (handler.getVoteNum() >= playerNum) {
                 handler.setAlive(false);
+                if (handler.getPlayerRole() instanceof normalMafia ||
+                        handler.getPlayerRole() instanceof Lecter ||
+                        handler.getPlayerRole() instanceof godFather) {
+                    mafiaNumber--;
+                } else {
+                    citizenNumber--;
+                }
                 serverMassages(handler.getHandlerName() + " got kicked ");
             }
         }
     }
 
-    //night mode methods .....................................................................................
+    //night mode methods ...................................................................................
 
+    public void massageToMafia() throws IOException {
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole() instanceof godFather ||
+                    handler.getPlayerRole() instanceof Lecter ||
+                    handler.getPlayerRole() instanceof normalMafia) {
+                handler.write("\nplease choose someone to kill...");
+            }
+        }
+        serverMassages("mafia are choosing...\n");
+        long time = System.currentTimeMillis();
+        long time2 = time + 30000;
+        while (System.currentTimeMillis() < time2) {
+
+        }
+        serverMassages("they Choosed...\n");
+    }
+
+    public void killPlayer(String name) throws IOException {
+        for (Handler handler : handlers) {
+            if (handler.getHandlerName().equals(name)) {
+                handler.increaseKillVoteNum();
+            }
+        }
+        killConfiguration();
+    }
+
+    public void killConfiguration() throws IOException {
+        if (mafiaNumber == 1) {
+            for (Handler handler : handlers) {
+                if (handler.getVoteToKill() == 1) {
+                    handler.getPlayerRole().decreaseHealth();
+                }
+            }
+        } else if (mafiaNumber > 1) {
+            for (Handler handler : handlers) {
+                if (handler.getVoteToKill() > 1) {
+                    handler.getPlayerRole().decreaseHealth();
+                }
+            }
+        }
+    }
+
+    //after night...........................................................................................
+    public void tellingStatusOfNight() throws IOException {
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole().getHealthBar() == 0) {
+                serverMassages(handler.getHandlerName() + "got killed savagely...\n");
+                handler.setAlive(false);
+                if (handler.getPlayerRole() instanceof godFather ||
+                        handler.getPlayerRole() instanceof Lecter ||
+                        handler.getPlayerRole() instanceof normalMafia) {
+                    mafiaNumber--;
+                } else {
+                    citizenNumber--;
+                }
+            }
+        }
+    }
 
     //the game mod methods..................................................................................
 
@@ -321,11 +377,12 @@ public class Server {
         }
     }
 
-    public void nightMode() {
+    public void nightMode() throws IOException {
+        serverMassages("we have retched to night...please wait for server massage....");
+        massageToMafia();
         long time = System.currentTimeMillis();
-        long time2 = time + 300000;
+        long time2 = time + 60000;
         while (System.currentTimeMillis() < time2) {
-
         }
     }
 
