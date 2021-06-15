@@ -442,10 +442,10 @@ public class Server {
      * @param permission the permission
      */
     public void mayorPermissionMethod(String permission) {
-        if (permission.equals("no")) {
-            mayorPermission = false;
-        } else {
+        if (permission.equals("yes")) {
             mayorPermission = true;
+        } else {
+            mayorPermission = false;
         }
     }
 
