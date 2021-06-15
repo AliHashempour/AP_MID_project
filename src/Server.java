@@ -7,6 +7,11 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * The type Server.
+ *
+ * @author ALi.Hashempour
+ */
 public class Server {
     private int Port;
     private int mafiaNumber = 0;
@@ -22,6 +27,11 @@ public class Server {
     private DataOutputStream dataOutputStream;
     private ExecutorService pool = Executors.newCachedThreadPool();
 
+    /**
+     * Instantiates a new Server.
+     *
+     * @param serverPort the server port
+     */
     public Server(int serverPort) {
         this.Port = serverPort;
         createRole();
@@ -108,16 +118,31 @@ public class Server {
     }
     //getters...........................................................................................
 
+    /**
+     * Gets day vote night.
+     *
+     * @return the day vote night
+     */
     public String getDayVoteNight() {
 
         return dayVoteNight;
     }
 
+    /**
+     * Gets file name.
+     *
+     * @return the file name
+     */
     public String getFileName() {
 
         return fileName;
     }
 
+    /**
+     * Gets roles.
+     *
+     * @return the roles
+     */
     public ArrayList<Role> getRoles() {
 
         return roles;
@@ -125,11 +150,24 @@ public class Server {
 
     //before starting game methods.......................................................................
 
+    /**
+     * Add user name.
+     *
+     * @param userName the user name
+     */
     public void addUserName(String userName) {
 
         userNames.add(userName);
     }
 
+    /**
+     * Name is there boolean.
+     *
+     * @param name             the name
+     * @param dataOutputStream the data output stream
+     * @return the boolean
+     * @throws IOException the io exception
+     */
     public boolean nameIsThere(String name, DataOutputStream dataOutputStream) throws IOException {
         boolean bool = false;
         if (userNames.contains(name)) {
@@ -142,6 +180,9 @@ public class Server {
         return bool;
     }
 
+    /**
+     * Create role.
+     */
     public void createRole() {
         roles.add(new detective());
         roles.add(new dieHard());
@@ -155,6 +196,13 @@ public class Server {
         roles.add(new townDoctor());
     }
 
+    /**
+     * Sending role role.
+     *
+     * @param dout the dout
+     * @return the role
+     * @throws IOException the io exception
+     */
     public Role sendingRole(DataOutputStream dout) throws IOException {
         Collections.shuffle(roles);
         dout.writeUTF("your role : " + roles.get(0).toString());
@@ -168,6 +216,11 @@ public class Server {
         return roles.get(0);
     }
 
+    /**
+     * Is ready boolean.
+     *
+     * @return the boolean
+     */
     public boolean isReady() {
         for (Handler handler : handlers) {
             if (!handler.isReady()) {
@@ -177,6 +230,11 @@ public class Server {
         return true;
     }
 
+    /**
+     * Introduction.
+     *
+     * @throws IOException the io exception
+     */
     public void introduction() throws IOException {
         StringBuilder mafias = new StringBuilder();
         for (Handler handler : handlers) {
@@ -215,12 +273,24 @@ public class Server {
 
     //massaging methods ..................................................................................
 
+    /**
+     * Server massages.
+     *
+     * @param string the string
+     * @throws IOException the io exception
+     */
     public void serverMassages(String string) throws IOException {
         for (Handler handler : handlers) {
             handler.write(string);
         }
     }
 
+    /**
+     * Send all.
+     *
+     * @param text the text
+     * @throws IOException the io exception
+     */
     public void sendAll(String text) throws IOException {
         if (dayVoteNight.equalsIgnoreCase("day")) {
             appendStrToFile(fileName, text + "\n");
@@ -233,6 +303,12 @@ public class Server {
 
     //chatroom methods....................................................................................
 
+    /**
+     * Append str to file.
+     *
+     * @param fileName the file name
+     * @param str      the str
+     */
     public void appendStrToFile(String fileName, String str) {
         try {
             // Open given file in append mode.
@@ -244,6 +320,11 @@ public class Server {
         }
     }
 
+    /**
+     * Remove client handler.
+     *
+     * @param handler the handler
+     */
     public void removeClientHandler(Handler handler) {
         if (handler.getPlayerRole() instanceof normalMafia ||
                 handler.getPlayerRole() instanceof Lecter ||
@@ -257,6 +338,9 @@ public class Server {
 
     //voting time methods..................................................................................
 
+    /**
+     * Reset can speaks.
+     */
     public void resetCanSpeaks() {
         for (Handler handler : handlers) {
             if (handler.isHeAlive()) {
@@ -265,6 +349,11 @@ public class Server {
         }
     }
 
+    /**
+     * Voting massage.
+     *
+     * @throws IOException the io exception
+     */
     public void votingMassage() throws IOException {
         StringBuilder voteNames = new StringBuilder();
         for (Handler handler : handlers) {
@@ -276,6 +365,13 @@ public class Server {
         serverMassages(voteNames.toString());
     }
 
+    /**
+     * Vote to kick.
+     *
+     * @param theHandler the the handler
+     * @param name       the name
+     * @throws IOException the io exception
+     */
     public void voteToKick(Handler theHandler, String name) throws IOException {
         if (name.equals("none")) {
             serverMassages(theHandler.getHandlerName() + " voted" +
@@ -293,6 +389,12 @@ public class Server {
         }
     }
 
+    /**
+     * Show votes.
+     *
+     * @throws IOException          the io exception
+     * @throws InterruptedException the interrupted exception
+     */
     public void showVotes() throws IOException, InterruptedException {
         String votes = "";
         for (Handler handler : handlers) {
@@ -305,6 +407,9 @@ public class Server {
         serverMassages(votes);
     }
 
+    /**
+     * Reset vote status.
+     */
     public void resetVoteStatus() {
         for (Handler handler : handlers) {
             handler.setCanVote(true);
@@ -312,6 +417,11 @@ public class Server {
         }
     }
 
+    /**
+     * Massage to mayor.
+     *
+     * @throws IOException the io exception
+     */
     public void massageToMayor() throws IOException {
         for (Handler handler : handlers) {
             if (handler.getPlayerRole() instanceof Mayor && handler.isHeAlive()) {
@@ -325,6 +435,11 @@ public class Server {
         }
     }
 
+    /**
+     * Mayor permission method.
+     *
+     * @param permission the permission
+     */
     public void mayorPermissionMethod(String permission) {
         if (permission.equals("no")) {
             mayorPermission = false;
@@ -333,6 +448,11 @@ public class Server {
         }
     }
 
+    /**
+     * Kick player.
+     *
+     * @throws IOException the io exception
+     */
     public void kickPlayer() throws IOException {
         int playerNum = (mafiaNumber + citizenNumber) / 2;
         for (Handler handler : handlers) {
@@ -352,6 +472,11 @@ public class Server {
 
     //night mode methods ...................................................................................
 
+    /**
+     * Massage to mafia.
+     *
+     * @throws IOException the io exception
+     */
     public void massageToMafia() throws IOException {
         for (Handler handler : handlers) {
             if ((handler.getPlayerRole() instanceof godFather && handler.isHeAlive()) ||
@@ -369,6 +494,12 @@ public class Server {
         serverMassages("they made they're choice...\n");
     }
 
+    /**
+     * Kill player.
+     *
+     * @param name the name
+     * @throws IOException the io exception
+     */
     public void killPlayer(String name) throws IOException {
         for (Handler handler : handlers) {
             if (handler.getHandlerName().equals(name)) {
@@ -377,6 +508,11 @@ public class Server {
         }
     }
 
+    /**
+     * Kill configuration.
+     *
+     * @throws IOException the io exception
+     */
     public void killConfiguration() throws IOException {
         if (mafiaNumber == 1) {
             for (Handler handler : handlers) {
@@ -393,6 +529,11 @@ public class Server {
         }
     }
 
+    /**
+     * Massage to doctor.
+     *
+     * @throws IOException the io exception
+     */
     public void massageToDoctor() throws IOException {
         for (Handler handler : handlers) {
             if (handler.getPlayerRole() instanceof townDoctor && handler.isHeAlive()) {
@@ -408,6 +549,11 @@ public class Server {
         serverMassages("doctor made his choice...\n");
     }
 
+    /**
+     * Heal.
+     *
+     * @param name the name
+     */
     public void heal(String name) {
         for (Handler handler : handlers) {
             if (handler.getHandlerName().equals(name)) {
@@ -418,6 +564,11 @@ public class Server {
         }
     }
 
+    /**
+     * Massage to detective.
+     *
+     * @throws IOException the io exception
+     */
     public void massageToDetective() throws IOException {
         for (Handler handler : handlers) {
             if (handler.getPlayerRole() instanceof detective && handler.isHeAlive()) {
@@ -432,6 +583,13 @@ public class Server {
         }
     }
 
+    /**
+     * Is he mafia.
+     *
+     * @param name      the name
+     * @param detective the detective
+     * @throws IOException the io exception
+     */
     public void isHeMafia(String name, Handler detective) throws IOException {
         for (Handler handler : handlers) {
             if (handler.getHandlerName().equals(name)) {
@@ -445,6 +603,11 @@ public class Server {
         }
     }
 
+    /**
+     * Massage to sniper.
+     *
+     * @throws IOException the io exception
+     */
     public void massageToSniper() throws IOException {
         serverMassages("\nsniper is choosing some one to kill if he is mafia or not!!!");
 
@@ -460,6 +623,12 @@ public class Server {
         }
     }
 
+    /**
+     * Sniper shoot.
+     *
+     * @param mafiaName the mafia name
+     * @param sniper    the sniper
+     */
     public void sniperShoot(String mafiaName, Handler sniper) {
         for (Handler handler : handlers) {
             if (handler.getHandlerName().equals(mafiaName) && handler.isHeAlive()) {
@@ -474,6 +643,11 @@ public class Server {
         }
     }
 
+    /**
+     * Massage to lecter.
+     *
+     * @throws IOException the io exception
+     */
     public void massageToLecter() throws IOException {
         serverMassages("\nLecter is healing a mafia!!!");
 
@@ -489,6 +663,11 @@ public class Server {
         }
     }
 
+    /**
+     * Save mafia.
+     *
+     * @param mafiaName the mafia name
+     */
     public void saveMafia(String mafiaName) {
         for (Handler handler : handlers) {
             if (handler.getHandlerName().equals(mafiaName) && handler.isHeAlive()) {
@@ -503,6 +682,11 @@ public class Server {
         }
     }
 
+    /**
+     * Massage to psychologist.
+     *
+     * @throws IOException the io exception
+     */
     public void massageToPsychologist() throws IOException {
         serverMassages("\npsychologist is muting a person!!!");
 
@@ -518,6 +702,12 @@ public class Server {
         }
     }
 
+    /**
+     * Mute.
+     *
+     * @param name the name
+     * @throws IOException the io exception
+     */
     public void mute(String name) throws IOException {
         for (Handler handler : handlers) {
             if (handler.getHandlerName().equals(name) && handler.isHeAlive()) {
@@ -528,6 +718,11 @@ public class Server {
 
     }
 
+    /**
+     * Massage to die hard.
+     *
+     * @throws IOException the io exception
+     */
     public void massageToDieHard() throws IOException {
         serverMassages("\ndie hard is talking to the GOD !!!");
 
@@ -543,6 +738,11 @@ public class Server {
         }
     }
 
+    /**
+     * Killed roles info.
+     *
+     * @param yesNo the yes no
+     */
     public void killedRolesInfo(String yesNo) {
         if (yesNo.equals("yes")) {
             dieHardRequest = true;
@@ -551,7 +751,14 @@ public class Server {
         }
     }
 
-    //after night...........................................................................................
+
+    //after night...............................................................................................
+
+    /**
+     * Telling status of night.
+     *
+     * @throws IOException the io exception
+     */
     public void tellingStatusOfNight() throws IOException {
 
         for (Handler handler : handlers) {
@@ -570,6 +777,11 @@ public class Server {
         }
     }
 
+    /**
+     * Dead roles status.
+     *
+     * @throws IOException the io exception
+     */
     public void deadRolesStatus() throws IOException {
         for (Handler handler : handlers) {
             if (handler.getPlayerRole().getHealthBar() == 0) {
@@ -580,6 +792,9 @@ public class Server {
 
     //the game mod methods..................................................................................
 
+    /**
+     * Chat room.
+     */
     public void chatRoom() {
         long time = System.currentTimeMillis();
         long time2 = time + 30000;
@@ -588,6 +803,9 @@ public class Server {
         }
     }
 
+    /**
+     * Vote room.
+     */
     public void voteRoom() {
         long time = System.currentTimeMillis();
         long time2 = time + 30000;
@@ -596,6 +814,12 @@ public class Server {
         }
     }
 
+    /**
+     * Night mode.
+     *
+     * @throws IOException          the io exception
+     * @throws InterruptedException the interrupted exception
+     */
     public void nightMode() throws IOException, InterruptedException {
         serverMassages("we have reached to night...please wait for server massage....");
         Thread.sleep(2000);
@@ -643,6 +867,11 @@ public class Server {
         }
     }
 
+    /**
+     * End game boolean.
+     *
+     * @return the boolean
+     */
     public boolean endGame() {
         return mafiaNumber == citizenNumber || mafiaNumber == 0;
 

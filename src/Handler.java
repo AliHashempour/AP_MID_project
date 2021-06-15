@@ -2,6 +2,9 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
+/**
+ * The type Handler.
+ */
 public class Handler extends Thread {
     private String name;
     private int voteToKill = 0;
@@ -105,63 +108,127 @@ public class Handler extends Thread {
     }
 
     //getters and setters........................................................................................
+
+    /**
+     * Gets player role.
+     *
+     * @return the player role
+     */
     public Role getPlayerRole() {
 
         return playerRole;
     }
 
+    /**
+     * Gets vote num.
+     *
+     * @return the vote num
+     */
     public int getVoteNum() {
 
         return voteNum;
     }
 
+    /**
+     * Gets vote to kill.
+     *
+     * @return the vote to kill
+     */
     public int getVoteToKill() {
 
         return voteToKill;
     }
 
+    /**
+     * Gets handler name.
+     *
+     * @return the handler name
+     */
     public String getHandlerName() {
 
         return name;
     }
 
+    /**
+     * Sets can vote.
+     *
+     * @param canVote the can vote
+     */
     public void setCanVote(boolean canVote) {
 
         this.canVote = canVote;
     }
 
+    /**
+     * Sets can speak.
+     *
+     * @param canSpeak the can speak
+     */
     public void setCanSpeak(boolean canSpeak) {
 
         this.canSpeak = canSpeak;
     }
 
+    /**
+     * Sets vote num.
+     *
+     * @param voteNum the vote num
+     */
     public void setVoteNum(int voteNum) {
 
         this.voteNum = voteNum;
     }
 
+    /**
+     * Sets alive.
+     *
+     * @param alive the alive
+     */
     public void setAlive(boolean alive) {
 
         isAlive = alive;
     }
 
     //booleans......................................................................................................
+
+    /**
+     * Is he alive boolean.
+     *
+     * @return the boolean
+     */
     public boolean isHeAlive() {
         return isAlive;
 
     }
 
+    /**
+     * Is ready boolean.
+     *
+     * @return the boolean
+     */
     public boolean isReady() {
 
         return isReady;
     }
 
     //file methods......................................................................................................
+
+    /**
+     * Write.
+     *
+     * @param string the string
+     * @throws IOException the io exception
+     */
     public void write(String string) throws IOException {
 
         dataOutputStream.writeUTF(string);
     }
 
+    /**
+     * Load.
+     *
+     * @param file the file
+     */
     public void load(String file) {
         try {
             BufferedReader in = new BufferedReader(new FileReader(file));
@@ -175,11 +242,18 @@ public class Handler extends Thread {
     }
 
     //voting and killing methods..........................................................................................
+
+    /**
+     * Increase vote num.
+     */
     public void increaseVoteNum() {
 
         voteNum++;
     }
 
+    /**
+     * Increase kill vote num.
+     */
     public void increaseKillVoteNum() {
 
         voteToKill++;

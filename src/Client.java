@@ -8,7 +8,6 @@ import java.util.Scanner;
 public class Client {
     private String hostname;
     private int port;
-    private String userName;
     private static Socket socket;
 
     public Client(String hostname, int port) {
@@ -27,13 +26,6 @@ public class Client {
         }
     }
 
-    void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    String getUserName() {
-        return this.userName;
-    }
 
 
     public static void main(String[] args) throws IOException {
