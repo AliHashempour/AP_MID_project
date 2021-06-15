@@ -1,3 +1,8 @@
+/**
+ * The type Die hard.
+ *
+ * @author ALi.Hashempour
+ */
 public class dieHard extends Role {
 
     private int healthBar = 2;
@@ -19,7 +24,6 @@ public class dieHard extends Role {
     public void increaseHealth() {
         healthBar++;
     }
-
 
 
     public String toString() {

@@ -1,6 +1,12 @@
+/**
+ * The type Detective.
+ *
+ * @author ALi.Hashempour
+ */
 public class detective extends Role {
 
     private int healthBar = 1;
+
 
     public void setHealthBar(int healthBar) {
         this.healthBar = healthBar;

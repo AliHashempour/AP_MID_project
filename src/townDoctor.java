@@ -1,3 +1,8 @@
+/**
+ * The type Town doctor.
+ *
+ * @author ALi.Hashempour
+ */
 public class townDoctor extends Role {
 
     private int healthBar = 1;
@@ -19,7 +24,6 @@ public class townDoctor extends Role {
     public void increaseHealth() {
         healthBar++;
     }
-
 
 
     public String toString() {

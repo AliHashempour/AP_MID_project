@@ -1,3 +1,8 @@
+/**
+ * The type Psychologist.
+ *
+ * @author ALi.Hashempour
+ */
 public class psychologist extends Role {
 
     private int healthBar = 1;
@@ -19,7 +24,6 @@ public class psychologist extends Role {
     public void increaseHealth() {
         healthBar++;
     }
-
 
 
     public String toString() {

@@ -138,6 +138,7 @@ public class Server {
         return fileName;
     }
 
+
     /**
      * Gets roles.
      *
@@ -877,6 +878,11 @@ public class Server {
 
     }
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main(String[] args) {
 
         Server server = new Server(9945);

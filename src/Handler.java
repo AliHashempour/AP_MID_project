@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 /**
  * The type Handler.
+ *
+ * @author ALi.Hashempour
  */
 public class Handler extends Thread {
     private String name;

@@ -1,3 +1,8 @@
+/**
+ * The type Mayor.
+ *
+ * @author ALi.Hashempour
+ */
 public class Mayor extends Role {
 
     private int healthBar = 1;

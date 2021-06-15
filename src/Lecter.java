@@ -1,3 +1,8 @@
+/**
+ * The type Lecter.
+ *
+ * @author ALi.Hashempour
+ */
 public class Lecter extends Role {
 
     private int healthBar = 1;
@@ -19,7 +24,6 @@ public class Lecter extends Role {
     public void increaseHealth() {
         healthBar++;
     }
-
 
 
     public String toString() {

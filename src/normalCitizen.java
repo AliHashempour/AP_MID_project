@@ -1,3 +1,8 @@
+/**
+ * The type Normal citizen.
+ *
+ * @author ALi.Hashempour
+ */
 public class normalCitizen extends Role {
 
     private int healthBar = 1;

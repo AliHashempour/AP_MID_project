@@ -1,3 +1,8 @@
+/**
+ * The type Sniper.
+ *
+ * @author ALi.Hashempour
+ */
 public class Sniper extends Role {
     private int healthBar = 1;
 
@@ -18,7 +23,6 @@ public class Sniper extends Role {
     public void increaseHealth() {
         healthBar++;
     }
-
 
 
     public String toString() {

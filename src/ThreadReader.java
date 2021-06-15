@@ -1,6 +1,11 @@
 import java.io.DataInputStream;
 import java.io.IOException;
 
+/**
+ * The type Thread reader.
+ *
+ * @author ALi.Hashempour
+ */
 public class ThreadReader extends Thread {
     private DataInputStream dataInputStream;
 

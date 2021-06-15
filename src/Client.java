@@ -5,6 +5,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+/**
+ * The type Client.
+ *
+ * @author ALi.Hashempour
+ */
 public class Client {
     private String hostname;
     private int port;
@@ -25,7 +30,6 @@ public class Client {
             System.out.println("I/O Error: " + ex.getMessage());
         }
     }
-
 
 
     public static void main(String[] args) throws IOException {

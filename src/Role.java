@@ -1,3 +1,8 @@
+/**
+ * The type Role.
+ *
+ * @author ALi.Hashempour
+ */
 public abstract class Role {
 
     int healthBar;
@@ -12,8 +17,8 @@ public abstract class Role {
     }
 
     public abstract void decreaseHealth();
-    public abstract void increaseHealth();
 
+    public abstract void increaseHealth();
 
 
 }

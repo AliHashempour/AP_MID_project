@@ -1,3 +1,8 @@
+/**
+ * The type God father.
+ *
+ * @author ALi.Hashempour
+ */
 public class godFather extends Role {
 
     private int healthBar = 1;

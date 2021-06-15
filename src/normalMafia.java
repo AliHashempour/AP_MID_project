@@ -1,3 +1,8 @@
+/**
+ * The type Normal mafia.
+ *
+ * @author ALi.Hashempour
+ */
 public class normalMafia extends Role {
 
     private int healthBar = 1;
