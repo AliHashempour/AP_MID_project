@@ -12,6 +12,7 @@ public class Handler extends Thread {
     private boolean isReady;
     private boolean isAlive;
     private boolean canVote;
+    private boolean canSpeak;
     private ArrayList<Handler> handlers;
     private DataOutputStream dataOutputStream;
     private DataInputStream dataInputStream;
@@ -24,6 +25,7 @@ public class Handler extends Thread {
         this.isReady = false;
         this.isAlive = true;
         this.canVote = true;
+        this.canSpeak = true;
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataInputStream = new DataInputStream(socket.getInputStream());
     }
@@ -76,9 +78,13 @@ public class Handler extends Thread {
                 if (server.getDayVoteNight().equals("night") && (role instanceof Lecter && isAlive)) {
                     server.saveMafia(text);
                 }
+                if (server.getDayVoteNight().equals("night") && (role instanceof psychologist && isAlive)) {
+                    server.mute(text);
+                }
+
 
                 //.................................................................................................
-                if (isAlive) {
+                if (isAlive && canSpeak) {
                     server.sendAll(name + ": " + text);
                 }
             }
@@ -115,6 +121,11 @@ public class Handler extends Thread {
     public void setCanVote(boolean canVote) {
 
         this.canVote = canVote;
+    }
+
+    public void setCanSpeak(boolean canSpeak) {
+
+        this.canSpeak = canSpeak;
     }
 
     public void setVoteNum(int voteNum) {

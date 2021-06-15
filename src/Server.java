@@ -54,19 +54,20 @@ public class Server {
                 dayVoteNight = "day";
                 serverMassages("now its day and you can chat for 5 minutes...");
 
-                // chatRoom();
+                 chatRoom();
 
                 //voting time.................................................................................
 
                 serverMassages("we passed the day you should vote in 5 minutes...");
-//                Thread.sleep(5000);
-//                dayVoteNight = "vote";
-//                votingMassage();
-//                voteRoom();
-//                showVotes();
-//                Thread.sleep(5000);
-//                kickPlayer();
-//                resetVoteStatus();
+                resetCanSpeaks();
+                Thread.sleep(5000);
+                dayVoteNight = "vote";
+                votingMassage();
+                voteRoom();
+                showVotes();
+                Thread.sleep(5000);
+                kickPlayer();
+                resetVoteStatus();
                 Thread.sleep(5000);
 
                 //night time...................................................................................
@@ -236,6 +237,14 @@ public class Server {
     }
 
     //voting time methods..................................................................................
+
+    public void resetCanSpeaks() {
+        for (Handler handler : handlers) {
+            if (handler.isHeAlive()) {
+                handler.setCanSpeak(true);
+            }
+        }
+    }
 
     public void votingMassage() throws IOException {
         StringBuilder voteNames = new StringBuilder();
@@ -454,6 +463,31 @@ public class Server {
         }
     }
 
+    public void massageToPsychologist() throws IOException {
+        serverMassages("\npsychologist is healing a mafia!!!");
+
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole() instanceof psychologist && handler.isHeAlive()) {
+                handler.write(" who do you want to shut his ass up???");
+            }
+        }
+        long time = System.currentTimeMillis();
+        long time2 = time + 30000;
+        while (System.currentTimeMillis() < time2) {
+
+        }
+    }
+
+    public void mute(String name) throws IOException {
+        for (Handler handler : handlers) {
+            if (handler.getHandlerName().equals(name) && handler.isHeAlive()) {
+                handler.setCanSpeak(false);
+                handler.write("you are muted for next day mate:(");
+            }
+        }
+
+    }
+
     //after night...........................................................................................
     public void tellingStatusOfNight() throws IOException {
 
@@ -520,6 +554,13 @@ public class Server {
         massageToLecter();
         Thread.sleep(2000);
         serverMassages("lecter played his turn!!!");
+        Thread.sleep(2000);
+        serverMassages("now its time for psychologist to mute some body!!!");
+        Thread.sleep(2000);
+        massageToPsychologist();
+        Thread.sleep(2000);
+        serverMassages("psychologist did his role!!!");
+        Thread.sleep(2000);
         long time = System.currentTimeMillis();
         long time2 = time + 1000;
         while (System.currentTimeMillis() < time2) {
