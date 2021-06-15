@@ -20,10 +20,6 @@ public class godFather extends Role {
         healthBar++;
     }
 
-    @Override
-    public void action() {
-
-    }
 
     public String toString() {
         return "godFather";

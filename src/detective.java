@@ -20,10 +20,6 @@ public class detective extends Role {
         healthBar++;
     }
 
-    @Override
-    public void action() {
-
-    }
 
     public String toString() {
         return "detective";

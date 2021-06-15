@@ -650,7 +650,7 @@ public class Server {
 
     public static void main(String[] args) {
 
-        Server server = new Server(8585);
+        Server server = new Server(9945);
         server.execute();
     }
 

@@ -20,11 +20,6 @@ public class normalCitizen extends Role {
         healthBar++;
     }
 
-    @Override
-    public void action() {
-
-    }
-
     public String toString() {
         return "normalCitizen";
     }

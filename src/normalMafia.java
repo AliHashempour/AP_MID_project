@@ -20,10 +20,6 @@ public class normalMafia extends Role {
         healthBar++;
     }
 
-    @Override
-    public void action() {
-
-    }
 
     public String toString() {
         return "normalMafia";

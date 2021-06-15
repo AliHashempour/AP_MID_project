@@ -19,10 +19,7 @@ public class Sniper extends Role {
         healthBar++;
     }
 
-    @Override
-    public void action() {
 
-    }
 
     public String toString() {
         return "Sniper";

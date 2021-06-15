@@ -14,6 +14,6 @@ public abstract class Role {
     public abstract void decreaseHealth();
     public abstract void increaseHealth();
 
-    public abstract void action();
+
 
 }

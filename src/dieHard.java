@@ -20,10 +20,7 @@ public class dieHard extends Role {
         healthBar++;
     }
 
-    @Override
-    public void action() {
 
-    }
 
     public String toString() {
         return "dieHard";

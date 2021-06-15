@@ -20,10 +20,7 @@ public class townDoctor extends Role {
         healthBar++;
     }
 
-    @Override
-    public void action() {
 
-    }
 
     public String toString() {
         return "townDoctor";

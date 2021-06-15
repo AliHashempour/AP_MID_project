@@ -20,10 +20,7 @@ public class Lecter extends Role {
         healthBar++;
     }
 
-    @Override
-    public void action() {
 
-    }
 
     public String toString() {
         return "Lecter";

@@ -20,10 +20,7 @@ public class psychologist extends Role {
         healthBar++;
     }
 
-    @Override
-    public void action() {
 
-    }
 
     public String toString() {
         return "psychologist";
