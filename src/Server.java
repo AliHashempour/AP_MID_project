@@ -51,7 +51,8 @@ public class Server {
             introduction();
 
             Thread.sleep(5000);
-            while (true) {
+            System.out.println(mafiaNumber + "  " + citizenNumber);
+            while (!endGame()) {
                 //DAY.........................................................................................
                 dayVoteNight = "day";
                 serverMassages("now its day and you can chat for 5 minutes...");
@@ -92,6 +93,12 @@ public class Server {
                 }
                 dieHardRequest = false;
                 Thread.sleep(10000);
+            }
+            serverMassages("i have to say that the game is finished:))))");
+            if (mafiaNumber == citizenNumber) {
+                serverMassages("MAFIA TEAM WON!!!");
+            } else if (mafiaNumber == 0) {
+                serverMassages("CITIZEN TEAM WON!!!");
             }
 
         } catch (IOException | InterruptedException ex) {
@@ -634,6 +641,11 @@ public class Server {
         long time2 = time + 1000;
         while (System.currentTimeMillis() < time2) {
         }
+    }
+
+    public boolean endGame() {
+        return mafiaNumber == citizenNumber || mafiaNumber == 0;
+
     }
 
     public static void main(String[] args) {
