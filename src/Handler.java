@@ -70,7 +70,14 @@ public class Handler extends Thread {
                         && isAlive) {
                     server.isHeMafia(text, this);
                 }
+                if (server.getDayVoteNight().equals("night") && (role instanceof Sniper && isAlive)) {
+                    server.sniperShoot(text, this);
+                }
+                if (server.getDayVoteNight().equals("night") && (role instanceof Lecter && isAlive)) {
+                    server.saveMafia(text);
+                }
 
+                //.................................................................................................
                 if (isAlive) {
                     server.sendAll(name + ": " + text);
                 }

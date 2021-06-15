@@ -54,19 +54,19 @@ public class Server {
                 dayVoteNight = "day";
                 serverMassages("now its day and you can chat for 5 minutes...");
 
-                chatRoom();
+                // chatRoom();
 
                 //voting time.................................................................................
 
                 serverMassages("we passed the day you should vote in 5 minutes...");
-                Thread.sleep(5000);
-                dayVoteNight = "vote";
-                votingMassage();
-                voteRoom();
-                showVotes();
-                Thread.sleep(5000);
-                kickPlayer();
-                resetVoteStatus();
+//                Thread.sleep(5000);
+//                dayVoteNight = "vote";
+//                votingMassage();
+//                voteRoom();
+//                showVotes();
+//                Thread.sleep(5000);
+//                kickPlayer();
+//                resetVoteStatus();
                 Thread.sleep(5000);
 
                 //night time...................................................................................
@@ -396,13 +396,71 @@ public class Server {
         }
     }
 
+    public void massageToSniper() throws IOException {
+        serverMassages("\nsniper is choosing some one to kill if he is mafia or not!!!");
+
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole() instanceof Sniper && handler.isHeAlive()) {
+                handler.write(" who do you wanna kill that you think he is a mafia???");
+            }
+        }
+        long time = System.currentTimeMillis();
+        long time2 = time + 30000;
+        while (System.currentTimeMillis() < time2) {
+
+        }
+    }
+
+    public void sniperShoot(String mafiaName, Handler sniper) {
+        for (Handler handler : handlers) {
+            if (handler.getHandlerName().equals(mafiaName) && handler.isHeAlive()) {
+                if (handler.getPlayerRole() instanceof normalMafia ||
+                        handler.getPlayerRole() instanceof Lecter ||
+                        handler.getPlayerRole() instanceof godFather) {
+                    handler.getPlayerRole().decreaseHealth();
+                } else {
+                    sniper.getPlayerRole().decreaseHealth();
+                }
+            }
+        }
+    }
+
+    public void massageToLecter() throws IOException {
+        serverMassages("\nLecter is healing a mafia!!!");
+
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole() instanceof Lecter && handler.isHeAlive()) {
+                handler.write(" who do you wanna heal from mafia team???");
+            }
+        }
+        long time = System.currentTimeMillis();
+        long time2 = time + 30000;
+        while (System.currentTimeMillis() < time2) {
+
+        }
+    }
+
+    public void saveMafia(String mafiaName) {
+        for (Handler handler : handlers) {
+            if (handler.getHandlerName().equals(mafiaName) && handler.isHeAlive()) {
+                if (handler.getPlayerRole() instanceof normalMafia ||
+                        handler.getPlayerRole() instanceof Lecter ||
+                        handler.getPlayerRole() instanceof godFather) {
+                    if (handler.getPlayerRole().getHealthBar() == 0) {
+                        handler.getPlayerRole().increaseHealth();
+                    }
+                }
+            }
+        }
+    }
+
     //after night...........................................................................................
     public void tellingStatusOfNight() throws IOException {
 
         for (Handler handler : handlers) {
             if (handler.getPlayerRole().getHealthBar() == 0) {
 
-                serverMassages(handler.getHandlerName() + " got killed in the night!!!!\n");
+                serverMassages(handler.getHandlerName() + " got killed in the night!!!!");
                 handler.setAlive(false);
                 if (handler.getPlayerRole() instanceof godFather ||
                         handler.getPlayerRole() instanceof Lecter ||
@@ -450,6 +508,18 @@ public class Server {
         massageToDetective();
         Thread.sleep(1000);
         serverMassages("detective did the questioning!!!");
+        Thread.sleep(2000);
+        serverMassages("now its time for Sniper to kill a mafia!!!");
+        Thread.sleep(2000);
+        massageToSniper();
+        Thread.sleep(2000);
+        serverMassages("sniper shot at some body!!!");
+        Thread.sleep(2000);
+        serverMassages("it is lecter time to play his role!!!");
+        Thread.sleep(2000);
+        massageToLecter();
+        Thread.sleep(2000);
+        serverMassages("lecter played his turn!!!");
         long time = System.currentTimeMillis();
         long time2 = time + 1000;
         while (System.currentTimeMillis() < time2) {
