@@ -11,6 +11,8 @@ public class Server {
     private int Port;
     private int mafiaNumber = 0;
     private int citizenNumber = 0;
+    private boolean dieHardRequest;
+    private boolean mayorPermission;
     private String dayVoteNight;
     private String fileName = "history.txt";
     private ArrayList<String> userNames = new ArrayList<>();
@@ -54,7 +56,7 @@ public class Server {
                 dayVoteNight = "day";
                 serverMassages("now its day and you can chat for 5 minutes...");
 
-                 chatRoom();
+                chatRoom();
 
                 //voting time.................................................................................
 
@@ -66,7 +68,13 @@ public class Server {
                 voteRoom();
                 showVotes();
                 Thread.sleep(5000);
-                kickPlayer();
+                massageToMayor();
+                if (mayorPermission) {
+                    kickPlayer();
+                } else {
+                    serverMassages("mayor vetoed the voting!!!");
+                }
+                mayorPermission = true;
                 resetVoteStatus();
                 Thread.sleep(5000);
 
@@ -78,8 +86,12 @@ public class Server {
 
                 //after night..................................................................................
                 tellingStatusOfNight();
+                Thread.sleep(2000);
+                if (dieHardRequest) {
+                    deadRolesStatus();
+                }
+                dieHardRequest = false;
                 Thread.sleep(10000);
-
             }
 
         } catch (IOException | InterruptedException ex) {
@@ -293,6 +305,27 @@ public class Server {
         }
     }
 
+    public void massageToMayor() throws IOException {
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole() instanceof Mayor && handler.isHeAlive()) {
+                handler.write("do you want to continue the voting????");
+            }
+        }
+        long time = System.currentTimeMillis();
+        long time2 = time + 30000;
+        while (System.currentTimeMillis() < time2) {
+
+        }
+    }
+
+    public void mayorPermissionMethod(String permission) {
+        if (permission.equals("no")) {
+            mayorPermission = false;
+        } else {
+            mayorPermission = true;
+        }
+    }
+
     public void kickPlayer() throws IOException {
         int playerNum = (mafiaNumber + citizenNumber) / 2;
         for (Handler handler : handlers) {
@@ -320,7 +353,7 @@ public class Server {
                 handler.write("\nplease choose someone to kill :)");
             }
         }
-        serverMassages("mafia are choosing some one to fuck him up");
+        serverMassages("mafia are choosing some one to kill him!!");
         long time = System.currentTimeMillis();
         long time2 = time + 50000;
         while (System.currentTimeMillis() < time2) {
@@ -464,7 +497,7 @@ public class Server {
     }
 
     public void massageToPsychologist() throws IOException {
-        serverMassages("\npsychologist is healing a mafia!!!");
+        serverMassages("\npsychologist is muting a person!!!");
 
         for (Handler handler : handlers) {
             if (handler.getPlayerRole() instanceof psychologist && handler.isHeAlive()) {
@@ -488,6 +521,29 @@ public class Server {
 
     }
 
+    public void massageToDieHard() throws IOException {
+        serverMassages("\ndie hard is talking to the GOD !!!");
+
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole() instanceof dieHard && handler.isHeAlive()) {
+                handler.write("do you want to show what roles are dead??? yes or no?");
+            }
+        }
+        long time = System.currentTimeMillis();
+        long time2 = time + 30000;
+        while (System.currentTimeMillis() < time2) {
+
+        }
+    }
+
+    public void killedRolesInfo(String yesNo) {
+        if (yesNo.equals("yes")) {
+            dieHardRequest = true;
+        } else {
+            dieHardRequest = false;
+        }
+    }
+
     //after night...........................................................................................
     public void tellingStatusOfNight() throws IOException {
 
@@ -503,6 +559,14 @@ public class Server {
                 } else {
                     citizenNumber--;
                 }
+            }
+        }
+    }
+
+    public void deadRolesStatus() throws IOException {
+        for (Handler handler : handlers) {
+            if (handler.getPlayerRole().getHealthBar() == 0) {
+                serverMassages(handler.getPlayerRole() + " is dead!!!");
             }
         }
     }
@@ -561,6 +625,11 @@ public class Server {
         Thread.sleep(2000);
         serverMassages("psychologist did his role!!!");
         Thread.sleep(2000);
+        serverMassages("its die hard turn!!!");
+        Thread.sleep(2000);
+        massageToDieHard();
+        Thread.sleep(2000);
+        serverMassages("die hard did his role!!!");
         long time = System.currentTimeMillis();
         long time2 = time + 1000;
         while (System.currentTimeMillis() < time2) {

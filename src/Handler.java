@@ -58,6 +58,10 @@ public class Handler extends Thread {
                         && isAlive) {
                     server.voteToKick(this, text);
                 }
+                if (server.getDayVoteNight().equals("vote") && (role instanceof Mayor)
+                        && isAlive) {
+                    server.mayorPermissionMethod(text);
+                }
                 //night mode.....................................................................................
                 if (server.getDayVoteNight().equals("night") && ((role instanceof godFather && isAlive) ||
                         (role instanceof Lecter && isAlive) || (role instanceof normalMafia && isAlive))
@@ -81,6 +85,9 @@ public class Handler extends Thread {
                 if (server.getDayVoteNight().equals("night") && (role instanceof psychologist && isAlive)) {
                     server.mute(text);
                 }
+                if (server.getDayVoteNight().equals("night") && (role instanceof dieHard && isAlive)) {
+                    server.killedRolesInfo(text);
+                }
 
 
                 //.................................................................................................
@@ -97,12 +104,7 @@ public class Handler extends Thread {
         }
     }
 
-
-    public boolean isReady() {
-
-        return isReady;
-    }
-
+    //getters and setters........................................................................................
     public Role getPlayerRole() {
 
         return playerRole;
@@ -116,6 +118,11 @@ public class Handler extends Thread {
     public int getVoteToKill() {
 
         return voteToKill;
+    }
+
+    public String getHandlerName() {
+
+        return name;
     }
 
     public void setCanVote(boolean canVote) {
@@ -133,21 +140,23 @@ public class Handler extends Thread {
         this.voteNum = voteNum;
     }
 
-    public String getHandlerName() {
-
-        return name;
-    }
-
-    public boolean isHeAlive() {
-        return isAlive;
-
-    }
-
     public void setAlive(boolean alive) {
 
         isAlive = alive;
     }
 
+    //booleans......................................................................................................
+    public boolean isHeAlive() {
+        return isAlive;
+
+    }
+
+    public boolean isReady() {
+
+        return isReady;
+    }
+
+    //file methods......................................................................................................
     public void write(String string) throws IOException {
 
         dataOutputStream.writeUTF(string);
@@ -165,6 +174,7 @@ public class Handler extends Thread {
         }
     }
 
+    //voting and killing methods..........................................................................................
     public void increaseVoteNum() {
 
         voteNum++;
