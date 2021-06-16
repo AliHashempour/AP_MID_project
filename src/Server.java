@@ -26,6 +26,11 @@ public class Server {
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
     private ExecutorService pool = Executors.newCachedThreadPool();
+    private String ANSI_BLUE = "\u001B[34m";
+    private String ANSI_RED = "\u001B[31m";
+    private String ANSI_GREEN = "\u001B[32m";
+    private String ANSI_PURPLE = "\u001B[35m";
+    private String ANSI_RESET = "\u001B[0m";
 
     /**
      * Instantiates a new Server.
@@ -65,13 +70,13 @@ public class Server {
             while (!endGame()) {
                 //DAY.........................................................................................
                 dayVoteNight = "day";
-                serverMassages("now its day and you can chat for 5 minutes...");
+                serverMassages(ANSI_BLUE + "now its day and you can chat for 5 minutes..." + ANSI_RESET);
 
                 chatRoom();
 
                 //voting time.................................................................................
 
-                serverMassages("we passed the day you should vote in 5 minutes...");
+                serverMassages(ANSI_BLUE + "we passed the day you should vote in 5 minutes..." + ANSI_RESET);
                 resetCanSpeaks();
                 Thread.sleep(5000);
                 dayVoteNight = "vote";
@@ -104,11 +109,13 @@ public class Server {
                 dieHardRequest = false;
                 Thread.sleep(10000);
             }
-            serverMassages("i have to say that the game is finished:))))");
+
+            serverMassages(ANSI_BLUE + "i have to say that the game is finished:))))" + ANSI_RESET);
+            Thread.sleep(2000);
             if (mafiaNumber == citizenNumber) {
-                serverMassages("MAFIA TEAM WON!!!");
+                serverMassages(ANSI_PURPLE + "MAFIA TEAM WON!!!" + ANSI_RESET);
             } else if (mafiaNumber == 0) {
-                serverMassages("CITIZEN TEAM WON!!!");
+                serverMassages(ANSI_GREEN + "CITIZEN TEAM WON!!!" + ANSI_RESET);
             }
 
         } catch (IOException | InterruptedException ex) {
@@ -442,10 +449,10 @@ public class Server {
      * @param permission the permission
      */
     public void mayorPermissionMethod(String permission) {
-        if (permission.equals("yes")) {
-            mayorPermission = true;
-        } else {
+        if (permission.equals("no")) {
             mayorPermission = false;
+        } else {
+            mayorPermission = true;
         }
     }
 
@@ -466,7 +473,7 @@ public class Server {
                 } else {
                     citizenNumber--;
                 }
-                serverMassages(handler.getHandlerName() + " got kicked ");
+                serverMassages(ANSI_RED + handler.getHandlerName() + " got kicked!!!" + ANSI_RESET);
             }
         }
     }
@@ -483,12 +490,12 @@ public class Server {
             if ((handler.getPlayerRole() instanceof godFather && handler.isHeAlive()) ||
                     (handler.getPlayerRole() instanceof Lecter && handler.isHeAlive()) ||
                     (handler.getPlayerRole() instanceof normalMafia && handler.isHeAlive())) {
-                handler.write("\nplease choose someone to kill :)");
+                handler.write("\n" + ANSI_RED + "please choose someone to kill :)" + ANSI_RESET);
             }
         }
         serverMassages("mafia are choosing some one to kill him!!");
         long time = System.currentTimeMillis();
-        long time2 = time + 50000;
+        long time2 = time + 60000;
         while (System.currentTimeMillis() < time2) {
 
         }
@@ -538,12 +545,12 @@ public class Server {
     public void massageToDoctor() throws IOException {
         for (Handler handler : handlers) {
             if (handler.getPlayerRole() instanceof townDoctor && handler.isHeAlive()) {
-                handler.write("please choose some one to heal him :D");
+                handler.write(ANSI_GREEN + "please choose some one to heal him :D" + ANSI_RESET);
             }
         }
         serverMassages("\ndoctor is choosing some one to heal");
         long time = System.currentTimeMillis();
-        long time2 = time + 30000;
+        long time2 = time + 50000;
         while (System.currentTimeMillis() < time2) {
 
         }
@@ -573,12 +580,12 @@ public class Server {
     public void massageToDetective() throws IOException {
         for (Handler handler : handlers) {
             if (handler.getPlayerRole() instanceof detective && handler.isHeAlive()) {
-                handler.write("hey man who do you wanna know that is mafia or not? ask me :D");
+                handler.write(ANSI_GREEN + "hey man who do you wanna know that is mafia or not? ask me :D" + ANSI_RESET);
             }
         }
         serverMassages("\ndetective is choosing some one to ask if he is mafia or not!!!");
         long time = System.currentTimeMillis();
-        long time2 = time + 30000;
+        long time2 = time + 50000;
         while (System.currentTimeMillis() < time2) {
 
         }
@@ -610,15 +617,15 @@ public class Server {
      * @throws IOException the io exception
      */
     public void massageToSniper() throws IOException {
-        serverMassages("\nsniper is choosing some one to kill if he is mafia or not!!!");
+        serverMassages("\nsniper is choosing some one to kill !!!");
 
         for (Handler handler : handlers) {
             if (handler.getPlayerRole() instanceof Sniper && handler.isHeAlive()) {
-                handler.write(" who do you wanna kill that you think he is a mafia???");
+                handler.write(ANSI_GREEN + " who do you wanna kill that you think he is a mafia???" + ANSI_RESET);
             }
         }
         long time = System.currentTimeMillis();
-        long time2 = time + 30000;
+        long time2 = time + 50000;
         while (System.currentTimeMillis() < time2) {
 
         }
@@ -654,11 +661,11 @@ public class Server {
 
         for (Handler handler : handlers) {
             if (handler.getPlayerRole() instanceof Lecter && handler.isHeAlive()) {
-                handler.write(" who do you wanna heal from mafia team???");
+                handler.write(ANSI_PURPLE + "who do you wanna heal from mafia team???" + ANSI_RESET);
             }
         }
         long time = System.currentTimeMillis();
-        long time2 = time + 30000;
+        long time2 = time + 50000;
         while (System.currentTimeMillis() < time2) {
 
         }
@@ -693,11 +700,11 @@ public class Server {
 
         for (Handler handler : handlers) {
             if (handler.getPlayerRole() instanceof psychologist && handler.isHeAlive()) {
-                handler.write(" who do you want to shut his ass up???");
+                handler.write("who do you want to shut him up???");
             }
         }
         long time = System.currentTimeMillis();
-        long time2 = time + 30000;
+        long time2 = time + 50000;
         while (System.currentTimeMillis() < time2) {
 
         }
@@ -713,7 +720,7 @@ public class Server {
         for (Handler handler : handlers) {
             if (handler.getHandlerName().equals(name) && handler.isHeAlive()) {
                 handler.setCanSpeak(false);
-                handler.write("you are muted for next day mate:(");
+                handler.write(ANSI_RED + "you are muted for next day mate:(" + ANSI_RESET);
             }
         }
 
@@ -733,7 +740,7 @@ public class Server {
             }
         }
         long time = System.currentTimeMillis();
-        long time2 = time + 30000;
+        long time2 = time + 50000;
         while (System.currentTimeMillis() < time2) {
 
         }
@@ -763,9 +770,9 @@ public class Server {
     public void tellingStatusOfNight() throws IOException {
 
         for (Handler handler : handlers) {
-            if (handler.getPlayerRole().getHealthBar() == 0) {
+            if (handler.getPlayerRole().getHealthBar() == 0 && handler.isHeAlive()) {
 
-                serverMassages(handler.getHandlerName() + " got killed in the night!!!!");
+                serverMassages(ANSI_RED + handler.getHandlerName() + " IS DEAD!!!!" + ANSI_RESET);
                 handler.setAlive(false);
                 if (handler.getPlayerRole() instanceof godFather ||
                         handler.getPlayerRole() instanceof Lecter ||
@@ -786,7 +793,7 @@ public class Server {
     public void deadRolesStatus() throws IOException {
         for (Handler handler : handlers) {
             if (handler.getPlayerRole().getHealthBar() == 0) {
-                serverMassages(handler.getPlayerRole() + " is dead!!!");
+                serverMassages(ANSI_RED + handler.getPlayerRole() + " is dead!!!" + ANSI_RESET);
             }
         }
     }
@@ -798,7 +805,7 @@ public class Server {
      */
     public void chatRoom() {
         long time = System.currentTimeMillis();
-        long time2 = time + 30000;
+        long time2 = time + 50000;
         while (System.currentTimeMillis() < time2) {
 
         }
@@ -809,11 +816,12 @@ public class Server {
      */
     public void voteRoom() {
         long time = System.currentTimeMillis();
-        long time2 = time + 30000;
+        long time2 = time + 60000;
         while (System.currentTimeMillis() < time2) {
 
         }
     }
+
 
     /**
      * Night mode.
@@ -822,46 +830,46 @@ public class Server {
      * @throws InterruptedException the interrupted exception
      */
     public void nightMode() throws IOException, InterruptedException {
-        serverMassages("we have reached to night...please wait for server massage....");
+        serverMassages(ANSI_BLUE + "we have reached to night...please wait for server massage...." + ANSI_RESET);
         Thread.sleep(2000);
         massageToMafia();
         killConfiguration();
         Thread.sleep(2000);
-        serverMassages("doctor wants to heal some one!!!");
+        serverMassages(ANSI_BLUE + "doctor wants to heal some one!!!" + ANSI_RESET);
         Thread.sleep(2000);
         massageToDoctor();
         Thread.sleep(2000);
-        serverMassages("doctor played his role!!!");
+        serverMassages(ANSI_BLUE + "doctor played his role!!!" + ANSI_RESET);
         Thread.sleep(2000);
-        serverMassages("now detective should ask for mafias!!!");
+        serverMassages(ANSI_BLUE + "now detective should ask for mafias!!!" + ANSI_RESET);
         Thread.sleep(2000);
         massageToDetective();
         Thread.sleep(1000);
-        serverMassages("detective did the questioning!!!");
+        serverMassages(ANSI_BLUE + "detective did the questioning!!!" + ANSI_RESET);
         Thread.sleep(2000);
-        serverMassages("now its time for Sniper to kill a mafia!!!");
+        serverMassages(ANSI_BLUE + "now its time for Sniper to kill a mafia!!!" + ANSI_RESET);
         Thread.sleep(2000);
         massageToSniper();
         Thread.sleep(2000);
-        serverMassages("sniper shot at some body!!!");
+        serverMassages(ANSI_BLUE + "sniper shot at some body!!!" + ANSI_RESET);
         Thread.sleep(2000);
-        serverMassages("it is lecter time to play his role!!!");
+        serverMassages(ANSI_BLUE + "it is lecter time to play his role!!!" + ANSI_RESET);
         Thread.sleep(2000);
         massageToLecter();
         Thread.sleep(2000);
-        serverMassages("lecter played his turn!!!");
+        serverMassages(ANSI_BLUE + "lecter played his turn!!!" + ANSI_RESET);
         Thread.sleep(2000);
-        serverMassages("now its time for psychologist to mute some body!!!");
+        serverMassages(ANSI_BLUE + "now its time for psychologist to mute some body!!!" + ANSI_RESET);
         Thread.sleep(2000);
         massageToPsychologist();
         Thread.sleep(2000);
-        serverMassages("psychologist did his role!!!");
+        serverMassages(ANSI_BLUE + "psychologist did his role!!!" + ANSI_RESET);
         Thread.sleep(2000);
-        serverMassages("its die hard turn!!!");
+        serverMassages(ANSI_BLUE + "its die hard turn!!!" + ANSI_RESET);
         Thread.sleep(2000);
         massageToDieHard();
         Thread.sleep(2000);
-        serverMassages("die hard did his role!!!");
+        serverMassages(ANSI_BLUE + "die hard did his role!!!" + ANSI_RESET);
         long time = System.currentTimeMillis();
         long time2 = time + 1000;
         while (System.currentTimeMillis() < time2) {
