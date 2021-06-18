@@ -243,6 +243,7 @@ public class Server {
      *
      * @throws IOException the io exception
      */
+
     public void introduction() throws IOException {
         StringBuilder mafias = new StringBuilder();
         for (Handler handler : handlers) {
