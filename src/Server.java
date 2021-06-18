@@ -66,7 +66,7 @@ public class Server {
             introduction();
 
             Thread.sleep(5000);
-            System.out.println(mafiaNumber + "  " + citizenNumber);
+
             while (!endGame()) {
                 //DAY.........................................................................................
                 dayVoteNight = "day";
