@@ -141,7 +141,6 @@ public class Server {
      * @return the file name
      */
     public String getFileName() {
-
         return fileName;
     }
 
@@ -622,7 +621,7 @@ public class Server {
 
         for (Handler handler : handlers) {
             if (handler.getPlayerRole() instanceof Sniper && handler.isHeAlive()) {
-                handler.write(ANSI_GREEN + " who do you wanna kill that you think he is a mafia???" + ANSI_RESET);
+                handler.write(ANSI_GREEN + "who do you wanna kill that you think he is a mafia???" + ANSI_RESET);
             }
         }
         long time = System.currentTimeMillis();
